@@ -31,6 +31,8 @@ void handle_request(int new_socket) {
         } else {
             sprintf(response, "HTTP/1.1 404 Not Found\nContent-Type: text/plain\nContent-Length: 9\n\nNot Found");
         }
+    } else if (strcmp(method, "POST") == 0) {
+        sprintf(response, "HTTP/1.1 200 OK\nContent-Type: text/plain\nContent-Length: 17\n\nPOST method received");
     } else {
         sprintf(response, "HTTP/1.1 405 Method Not Allowed\nContent-Type: text/plain\nContent-Length: 15\n\nMethod Not Allowed");
     }
@@ -44,7 +46,36 @@ int main() {
     int opt = 1;
     int addrlen = sizeof(address);
 
-    // Creating socket file descriptor
+    // Creating sockevoid handle_request(int new_socket) {
+    char buffer[BUFFER_SIZE] = {0};
+    long valread;
+    valread = read(new_socket, buffer, BUFFER_SIZE);
+    printf("%s\n", buffer);
+
+    char method[8], path[1024], protocol[16];
+    sscanf(buffer, "%s %s %s", method, path, protocol);
+
+    char response[BUFFER_SIZE];
+
+    if (strcmp(method, "GET") == 0) {
+        if (strcmp(path, "/") == 0) {
+            sprintf(response, "HTTP/1.1 200 OK\nContent-Type: text/plain\nContent-Length: 12\n\nHello world!");
+        } else {
+            sprintf(response, "HTTP/1.1 404 Not Found\nContent-Type: text/plain\nContent-Length: 9\n\nNot Found");
+        }
+    } else if (strcmp(method, "POST") == 0) {
+        sprintf(response, "HTTP/1.1 200 OK\nContent-Type: text/plain\nContent-Length: 17\n\nPOST method received");
+    } else {
+        sprintf(response, "HTTP/1.1 405 Method Not Allowed\nContent-Type: text/plain\nContent-Length: 15\n\nMethod Not Allowed");
+    }
+
+    write(new_socket, response, strlen(response));
+ // Creating socket file descriptor
+// file_descriptor = socket(AF_INET, SOCK_STREAM, 0)) == 0) {
+//        perror("socket failed");
+//        exit(EXIT_FAILURE);
+//    }
+
     if ((server_fd = socket(AF_INET, SOCK_STREAM, 0)) == 0) {
         perror("socket failed");
         exit(EXIT_FAILURE);
